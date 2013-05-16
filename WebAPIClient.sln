@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPIClient", "WebAPIClient\WebAPIClient.csproj", "{5FC0562B-38BD-4B8F-999C-E52054E52B33}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://il01engtfs01:8080/tfs/tradestationtpc
+		SccProjectUniqueName0 = ..\\WebAPIObjects\\WebAPIObjects\\WebAPIObjects.csproj
+		SccProjectName0 = ../WebAPIObjects/WebAPIObjects
+		SccAuxPath0 = http://il01engtfs01:8080/tfs/tradestationtpc
+		SccLocalPath0 = ..\\WebAPIObjects\\WebAPIObjects
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectUniqueName1 = WebAPIClient\\WebAPIClient.csproj
+		SccProjectName1 = WebAPIClient
+		SccAuxPath1 = http://il01engtfs01:8080/tfs/tradestationtpc
+		SccLocalPath1 = WebAPIClient
+		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5FC0562B-38BD-4B8F-999C-E52054E52B33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FC0562B-38BD-4B8F-999C-E52054E52B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FC0562B-38BD-4B8F-999C-E52054E52B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FC0562B-38BD-4B8F-999C-E52054E52B33}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

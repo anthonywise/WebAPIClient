@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>WebAPIObjects</id>
+    <version>1.0.3.0</version>
+    <title>WebAPIObjects</title>
+    <authors>Ben Bowen</authors>
+    <owners>Ben Bowen</owners>
+    <projectUrl>https://github.com/bcbowen/WebAPIObjects</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Object library to be used with the TradeStation WebAPI</description>
+    <releaseNotes>Initial Package</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <language />
+    <tags>TradeStation WebAPI</tags>
+  </metadata>
+</package>
