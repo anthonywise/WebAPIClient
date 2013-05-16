@@ -9,10 +9,10 @@
 *.user
 *.sln.docstates
 
-# Build results - enabling debug, relase, and bin to pull in dependencies
-#[Dd]ebug/
-#[Rr]elease/
-#[Bb]in/
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
 
 x64/
 build/
