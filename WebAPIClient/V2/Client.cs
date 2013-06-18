@@ -74,6 +74,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		public event HttpEventHandler MessageResent;
 		public event HttpEventHandler Timeout;
 		public event SymbolNotFoundEventHandler SymbolNotFound;
+		public event EventHandler AccessTokenExpired;
+
 		/// <summary>
 		/// This event is fired when an async call throws an exception.
 		/// </summary>
@@ -138,6 +140,11 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		private void OnClientTaskException(Exception ex)
 		{
 			OnClientTaskException(this, new ClientTaskExceptionArgs(ex)); 
+		}
+
+		protected void OnAccessTokenExpired(object sender, EventArgs args)
+		{
+			if (AccessTokenExpired != null) AccessTokenExpired(sender, args);
 		}
 
 		#endregion events
@@ -1235,6 +1242,10 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 			{
 				result = HttpClient.HttpGet(uri, Token.Token, timeOut);
 			}
+			catch (AccessTokenExpiredException)
+			{
+				OnAccessTokenExpired(this, EventArgs.Empty);
+			}
 			catch (ClientQuotaExceededException)
 			{
 				SleepUntil = DateTime.Now.AddMilliseconds(sleepTime); 
@@ -1270,6 +1281,10 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 			try
 			{
 				result = HttpClient.HttpPost(uri, Token.Token, postData, timeout);
+			}
+			catch (AccessTokenExpiredException)
+			{
+				OnAccessTokenExpired(this, EventArgs.Empty);
 			}
 			catch (ClientQuotaExceededException)
 			{

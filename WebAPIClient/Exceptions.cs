@@ -1,26 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization; 
-using System.Text;
+using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
 using TradeStation.SystemTeam.Tools.WebAPI.WebAPIObjects;
 
 namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 {
+	public class AccessTokenExpiredException : APIClientException
+	{
+		public AccessTokenExpiredException() { }
+		public AccessTokenExpiredException(string message) : base(message) { }
+		public AccessTokenExpiredException(string message, Exception innerException) : base(message, innerException) { }
+		public AccessTokenExpiredException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+	}
+
 	public abstract class APIClientException : Exception 
 	{
-		public APIClientException() : base() { }
-		public APIClientException(string message) : base(message) { }
-		public APIClientException(string message, Exception innerException) : base(message, innerException) { }
-		public APIClientException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+		protected APIClientException() { }
+		protected APIClientException(string message) : base(message) { }
+		protected APIClientException(string message, Exception innerException) : base(message, innerException) { }
+		protected APIClientException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 	}
 
 	
 	public class ClientAuthorizationException : APIClientException
 	{
-		public ClientAuthorizationException() : base() { }
+		public ClientAuthorizationException() { }
 		public ClientAuthorizationException(string message) : base(message) { }
 		public ClientAuthorizationException(string message, Exception innerException) : base(message, innerException) { }
 		public ClientAuthorizationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
@@ -31,7 +36,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 
 	public class ClientTimeoutException : APIClientException
 	{ 
-		public ClientTimeoutException() : base() { }
+		public ClientTimeoutException() { }
 		public ClientTimeoutException(string message) : base(message) { }
 		public ClientTimeoutException(string message, Exception innerException) : base(message, innerException) { }
 		public ClientTimeoutException(SerializationInfo info, StreamingContext context) : base(info, context) { }
@@ -39,7 +44,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 
 	public class ClientNotAuthorizedException : APIClientException
 	{
-		public ClientNotAuthorizedException() : base() { }
+		public ClientNotAuthorizedException() { }
 		public ClientNotAuthorizedException(string message) : base(message) { }
 		public ClientNotAuthorizedException(string message, Exception innerException) : base(message, innerException) { }
 		public ClientNotAuthorizedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
@@ -51,7 +56,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 	public class SymbolNotFoundException : APIClientException
 	{
 		public string Symbol{get;private set;}
-		public SymbolNotFoundException(string symbol) : base() 
+		public SymbolNotFoundException(string symbol)
 		{
 			Symbol = symbol;
 		}
@@ -80,7 +85,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		public string Json { get; private set; }
 		public bool ParseErrorOccurred{get; private set;}
 
-		public ClientBadRequestException(string json) : base() 
+		public ClientBadRequestException(string json)
 		{
 			ParseError(json); 
 		}
@@ -121,7 +126,6 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		public string ErrorMessage { get; private set; }
 
 		public ClientGenericProtocolException(string errorMessage)
-			: base()
 		{
 			ErrorMessage = errorMessage;
 		}
@@ -150,7 +154,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 	{
 		public string ResponseText { get; private set; }
 
-		public MaintenanceException(string responseText) : base() 
+		public MaintenanceException(string responseText) 
 		{
 			ResponseText = responseText; 
 		}
