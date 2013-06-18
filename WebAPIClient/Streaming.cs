@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Threading;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using TradeStation.SystemTeam.Tools.WebAPI.WebAPIObjects;
-using System.Runtime.Remoting.Messaging;
 
 namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 {
@@ -55,21 +46,22 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 	{
 		public event HttpEventHandler Timeout;
 
-		protected const int timeOut = 10000;
-		private object statusLock = new object(); 
+		protected const int TimeOut = 10000;
+		private readonly object statusLock = new object(); 
 
 		protected Uri ApiRoot { get; set; }
 		public string ConnectedServer { get; set; }
+		public bool IsRunning
+		{
+			get { return Status == ListenerStatus.Running; }
+		}
 
 		private ListenerStatus status;
 		protected ListenerStatus Status 
 		{
 			get 
 			{
-				lock (statusLock)
-				{
-					return status;
-				}
+				return status;
 			}
 			set 
 			{
@@ -91,10 +83,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		{
 			if (Timeout != null) Timeout(sender, args); 
 		}
-
-		public StreamListener() 
-		{ }
-		
+	
 	}
 
 	
