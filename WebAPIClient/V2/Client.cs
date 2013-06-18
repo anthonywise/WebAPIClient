@@ -32,6 +32,10 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 	{
 		private readonly Uri root;
 		public AccessToken Token { private set; get; }
+		/// <summary>
+		/// Useful for responding to access token expired event when using the password grant type. The login for the current client can be cached here and used to get a new token.
+		/// </summary>
+		public Login UserCredentials { get; set; }
 		private const int TimeoutDefault = 10000;
 		private const int SleepDefault = 5000;
 		private readonly int sleepTime;
@@ -1310,6 +1314,16 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		}
 
 		#endregion HttpHelperMethods
+
+		#region Refresh
+
+		public void RefreshToken(string newToken, string expiresIn)
+		{
+			Token.Token = newToken;
+			Token.ExpiresIn = expiresIn;
+		}
+
+		#endregion Refresh
 
 		#endregion methods
 	}
