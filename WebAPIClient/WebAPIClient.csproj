@@ -45,6 +45,9 @@
     <AssemblyOriginatorKeyFile>..\..\Key\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json.Net35">
       <HintPath>..\..\..\Newtonsoft.Json.Net35.dll</HintPath>
     </Reference>
