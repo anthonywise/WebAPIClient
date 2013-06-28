@@ -148,6 +148,15 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 
 	}
 
+	public class KeepAliveFailureException : APIClientException
+	{
+		public KeepAliveFailureException() { }
+		public KeepAliveFailureException(string message) : base(message) { }
+		public KeepAliveFailureException(string message, Exception innerException) : base(message, innerException) { }
+		public KeepAliveFailureException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+	}
+
+
 	public class MaintenanceException : APIClientException
 	{
 		public string ResponseText { get; private set; }
