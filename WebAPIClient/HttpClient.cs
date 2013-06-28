@@ -122,7 +122,9 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		private static void HandleWebException(WebException ex)
 		{
 			if (ex.Status == WebExceptionStatus.Timeout) throw new ClientTimeoutException();
-			
+
+			if (ex.Status == WebExceptionStatus.KeepAliveFailure) throw new KeepAliveFailureException();
+
 			if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
 			{
 				Stream responseStream = ex.Response.GetResponseStream();
