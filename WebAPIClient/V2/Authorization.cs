@@ -15,9 +15,9 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 				string.Format(
 					"grant_type=authorization_code&code={0}&client_id={1}&redirect_uri={2}&client_secret={3}",
 					authCode,
-					clientId.ToString().ToUpper(),
+					clientId.ToUpper(),
 					redirectUri,
-					clientSecret.ToString().ToUpper());
+					clientSecret.ToUpper());
 			
 			Uri authUrl = new Uri(string.Format("{0}v2/security/authorize", apiRoot));
 			WebHeaderCollection headers = new WebHeaderCollection {{"CONTENT-TYPE", "application/x-www-form-urlencoded"}};
