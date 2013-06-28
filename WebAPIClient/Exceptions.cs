@@ -29,8 +29,6 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		public ClientAuthorizationException(string message) : base(message) { }
 		public ClientAuthorizationException(string message, Exception innerException) : base(message, innerException) { }
 		public ClientAuthorizationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
-
 	}
 	
 
