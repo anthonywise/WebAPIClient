@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using TradeStation.SystemTeam.Tools.WebAPI.WebAPIObjects;
-using System.Threading.Tasks;
+
 
 
 namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
@@ -74,6 +74,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 
 		#region events
 
+		public event EventHandler KeepAliveFailure;
 		public event HttpEventHandler QuotaExceeded;
 		public event HttpEventHandler MessageResent;
 		public event HttpEventHandler Timeout;
@@ -149,6 +150,11 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		protected void OnAccessTokenExpired(object sender, EventArgs args)
 		{
 			if (AccessTokenExpired != null) AccessTokenExpired(sender, args);
+		}
+
+		protected void OnKeepAliveFailure(object sender, EventArgs args)
+		{
+			if (KeepAliveFailure != null) KeepAliveFailure(sender, args);
 		}
 
 		#endregion events
@@ -505,15 +511,15 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 			{
 				case AssetType.FU:
 					List<FuturesOrderConfirmation> futuresConfirmationList = JsonConvert.DeserializeObject<List<FuturesOrderConfirmation>>(response);
-					confirmationList.AddRange(futuresConfirmationList);
+					if (futuresConfirmationList != null) confirmationList.AddRange(futuresConfirmationList);
 					break;
 				case AssetType.FX:
 					List<ForexOrderConfirmation> forexConfirmationList = JsonConvert.DeserializeObject<List<ForexOrderConfirmation>>(response);
-					confirmationList.AddRange(forexConfirmationList);
+					if (forexConfirmationList != null) confirmationList.AddRange(forexConfirmationList);
 					break;
 				default:
 					List<EquityOrderConfirmation> equityConfirmationList = JsonConvert.DeserializeObject<List<EquityOrderConfirmation>>(response);
-					confirmationList.AddRange(equityConfirmationList);
+					if (equityConfirmationList != null) confirmationList.AddRange(equityConfirmationList);
 					break;
 			}
 
@@ -537,15 +543,15 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 			{
 				case AssetType.FU:
 					List<FuturesOrderConfirmation> futuresConfirmationList = JsonConvert.DeserializeObject<List<FuturesOrderConfirmation>>(response);
-					confirmationList.AddRange(futuresConfirmationList);
+					if (futuresConfirmationList != null) confirmationList.AddRange(futuresConfirmationList);
 					break;
 				case AssetType.FX:
 					List<ForexOrderConfirmation> forexConfirmationList = JsonConvert.DeserializeObject<List<ForexOrderConfirmation>>(response);
-					confirmationList.AddRange(forexConfirmationList);
+					if (forexConfirmationList != null) confirmationList.AddRange(forexConfirmationList);
 					break;
 				default:
 					List<EquityOrderConfirmation> equityConfirmationList = JsonConvert.DeserializeObject<List<EquityOrderConfirmation>>(response);
-					confirmationList.AddRange(equityConfirmationList);
+					if (equityConfirmationList != null) confirmationList.AddRange(equityConfirmationList);
 					break;
 			}
 
@@ -650,9 +656,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 			// call full overload with all params (defaults)
 
 			// ReSharper disable RedundantArgumentName
-			OptionSymbolSearchAsync(category: category, symbolRoot: symbolRoot, strikeCount: 3, strikePriceLow: 0, strikePriceHigh: decimal.MaxValue,
-			dateCount: 3, expirationDateLow: null, expirationDateHigh: null, optionType: OptionType.Both, futureType: FutureType.Electronic,
-				symbolType: SymbolType.Composite, country: CountryCode.US, timeout: TimeoutDefault);
+			OptionSymbolSearchAsync(category: category, symbolRoot: symbolRoot, strikeCount: 3, strikePriceLow: 0);
 			// ReSharper restore RedundantArgumentName
 		}
 
@@ -1241,10 +1245,16 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		{
 			string result = string.Empty;
 			CheckSleepStatus(); 
-
+			int retryCount = 0; 
+			while (retryCount < 5 && result == string.Empty)
+			{
 			try
 			{
 				result = HttpClient.HttpGet(uri, Token.Token, timeOut);
+			}
+			catch (KeepAliveFailureException)
+			{
+				OnKeepAliveFailure(this, EventArgs.Empty);
 			}
 			catch (AccessTokenExpiredException)
 			{
@@ -1274,6 +1284,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 				OnSymbolNotFound(ex.Symbol); 
 			}
 
+				retryCount++;
+			}
 			return result;
 		}
 
@@ -1281,10 +1293,16 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		private string TryPost(Uri uri, string postData, int timeout)
 		{
 			string result = string.Empty;
-
+			int retryCount = 0;
+			while (retryCount < 5 && result == string.Empty)
+			{
 			try
 			{
 				result = HttpClient.HttpPost(uri, Token.Token, postData, timeout);
+			}
+			catch (KeepAliveFailureException)
+			{
+				OnKeepAliveFailure(this, EventArgs.Empty);
 			}
 			catch (AccessTokenExpiredException)
 			{
@@ -1309,6 +1327,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 			{
 				OnTimeout(uri);
 			}
+				retryCount++; 
+			}
 
 			return result;
 		}
@@ -1317,10 +1337,9 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 
 		#region Refresh
 
-		public void RefreshToken(string newToken, string expiresIn)
+		public void RefreshToken(AccessToken token)
 		{
-			Token.Token = newToken;
-			Token.ExpiresIn = expiresIn;
+			Token = token;
 		}
 
 		#endregion Refresh
