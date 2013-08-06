@@ -67,6 +67,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="HttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="V2\ApiUtility.cs" />
     <Compile Include="V2\Authorization.cs" />
     <Compile Include="V2\Client.cs" />
     <Compile Include="V2\Listener.cs" />
