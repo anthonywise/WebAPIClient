@@ -37,10 +37,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 
 		protected void OnBarChartDataReceived(BarChartDataReceivedEventArgs args)
 		{
+			LastPacketReceived = DateTime.Now;
 			if (BarChartDataReceived != null) BarChartDataReceived(this, args);
-
-			//Increment();
-			//if (LimitReached) Stop();
 		}
 
 		protected void OnBarsBackQuotaReached(object sender, EventArgs args)
@@ -143,6 +141,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 				}
 				catch (WebException ex)
 				{
+					Status = ListenerStatus.Stopped;
 					if (ex.Status == WebExceptionStatus.Timeout)
 					{
 						OnTimeout(this, new HttpEventArgs(uri));
@@ -173,6 +172,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 
 		protected void OnQuoteReceived(QuoteReceivedEventArgs args)
 		{
+			LastPacketReceived = DateTime.Now;
 			if (QuoteReceived != null) QuoteReceived(this, args);
 
 		}
@@ -242,6 +242,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 					}
 					catch (WebException ex)
 					{
+						Status = ListenerStatus.Stopped;
 						if (ex.Status == WebExceptionStatus.Timeout)
 						{
 							OnTimeout(this, new HttpEventArgs(uri));

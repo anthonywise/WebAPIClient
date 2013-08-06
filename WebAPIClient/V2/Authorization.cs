@@ -10,7 +10,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient.V2
 		public static AccessToken GetAccessToken(Uri apiRoot, string authCode, string clientId, string clientSecret,
 		                                         Uri redirectUri)
 		{
-			// TODO: This seems like a bug - the ids have to be cast to string and ucased or the api won't recognize them... once this is fixed (if) this following cast can be removed.
+			// TODO: This seems like a bug - the guids have to ucased or the api won't recognize them... once this is fixed (if) this following cast can be removed.
 			string postData =
 				string.Format(
 					"grant_type=authorization_code&code={0}&client_id={1}&redirect_uri={2}&client_secret={3}",

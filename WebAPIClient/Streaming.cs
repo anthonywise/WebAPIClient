@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 using TradeStation.SystemTeam.Tools.WebAPI.WebAPIObjects;
 
@@ -49,8 +51,41 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		protected const int TimeOut = 10000;
 		private readonly object statusLock = new object(); 
 
+		public StreamListener()
+		{
+			CancellationSource = new CancellationTokenSource();
+			ConnectedSince = DateTime.MinValue;
+			LastPacketReceived = DateTime.MinValue;
+		}
+
+		#region properties
+
+		protected CancellationTokenSource CancellationSource { get; set; }
 		protected Uri ApiRoot { get; set; }
 		public string ConnectedServer { get; set; }
+		public DateTime ConnectedSince { get; private set; }
+		public DateTime LastPacketReceived { get; protected set; }
+		public int ConnectedSeconds {
+			get
+			{
+				if (status == ListenerStatus.Running && ConnectedSince > DateTime.MinValue)
+					return (int)DateTime.Now.Subtract(ConnectedSince).TotalSeconds;
+
+				return 0;
+			}
+		}
+
+		public int ElapsedSecondsSinceLastPacket
+		{
+			get
+			{
+				if (LastPacketReceived > DateTime.MinValue)
+					return (int) DateTime.Now.Subtract(LastPacketReceived).TotalSeconds;
+
+				return 0;
+
+			}
+		}
 		public bool IsRunning
 		{
 			get { return Status == ListenerStatus.Running; }
@@ -67,12 +102,19 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 			{
 				lock (statusLock) 
 				{
+					if (value == ListenerStatus.Stopped) 
+						ConnectedSince = DateTime.MinValue;
+					else if (value == ListenerStatus.Running) 
+						ConnectedSince = DateTime.Now;
 					status = value;
 				}
 			}
 		}
 		protected AccessToken Token { get; set; }
 		
+		#endregion properties
+
+		#region methods
 
 		public void Stop()
 		{
@@ -84,6 +126,7 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 			if (Timeout != null) Timeout(sender, args); 
 		}
 	
+		#endregion methods
 	}
 
 	
