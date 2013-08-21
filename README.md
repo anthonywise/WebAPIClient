@@ -5,6 +5,7 @@ Client library for the TradeStation WebAPI
 
 History:   
   
+08/21/2013  Modified HttpClient to URLEncode the LocalPath section of endpoints because of an issue with endpoints with commas in them.  
 08/03/2013  Added ApiUtility class with static methods for IsOnline (marketdatanormal) and GetVersion  
 07/26/2013  Fixed bug with listeners where they were not put in a Stopped state in certain cases  
 06/28/2013  Added KeepAliveFailure event  

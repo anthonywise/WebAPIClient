@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Web;
 
 namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 {
@@ -16,7 +17,9 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 		/// <returns></returns>
 		public static string HttpGet(Uri uri, WebHeaderCollection headers, int timeout)
 		{
-			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+			string navUri = EnsureLocalPathEncoded(uri);
+
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(navUri);
 			SetHeaders(headers, request); 
 			request.Timeout = timeout;
 			request.Method = "GET"; 
@@ -34,6 +37,21 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 				HandleWebException(ex);
 				return string.Empty; 
 			}
+		}
+
+		internal static string EnsureLocalPathEncoded(Uri target)
+		{
+			string decodedPath = System.Web.HttpUtility.UrlDecode(target.LocalPath);
+			StringBuilder encodedPath = new StringBuilder(255);
+			encodedPath.AppendFormat("{0}://{1}/", target.Scheme, target.Host);
+			string[] segments = decodedPath.Split('/');
+			foreach (string segment in segments)
+			{
+				if (!string.IsNullOrEmpty(segment)) encodedPath.Append(System.Web.HttpUtility.UrlEncode(segment) + "/");
+			}
+			if (encodedPath[encodedPath.Length - 1] != '/') encodedPath.Append('/');
+			encodedPath.Append(target.Query);
+			return encodedPath.ToString();
 		}
 
 		/// <summary>
@@ -70,7 +88,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 
 		public static string HttpDelete(Uri uri, int timeout, WebHeaderCollection headers)
 		{
-			HttpWebRequest request = InitRequest(uri, timeout, headers, "DELETE");
+			string navUrl = EnsureLocalPathEncoded(uri);
+			HttpWebRequest request = InitRequest(navUrl, timeout, headers, "DELETE");
 			
 			try
 			{
@@ -91,7 +110,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 
 		private static string SendData(Uri uri, string data, string method, int timeout, WebHeaderCollection headers)
 		{
-			HttpWebRequest request = InitRequest(uri, timeout, headers, method);
+			string navUri = EnsureLocalPathEncoded(uri);
+			HttpWebRequest request = InitRequest(navUri, timeout, headers, method);
 
 			byte[] dataBytes = Encoding.Default.GetBytes(data);
 			Stream postStream = request.GetRequestStream();
@@ -108,8 +128,8 @@ namespace TradeStation.SystemTeam.Tools.WebAPI.WebAPIClient
 				return string.Empty;
 			}
 		}
-		
-		private static HttpWebRequest InitRequest(Uri uri, int timeout, WebHeaderCollection headers, string method)
+
+		private static HttpWebRequest InitRequest(string uri, int timeout, WebHeaderCollection headers, string method)
 		{
 			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
 			if (string.IsNullOrEmpty(headers["CONTENT-TYPE"])) headers.Add("CONTENT-TYPE", "application/JSON");
